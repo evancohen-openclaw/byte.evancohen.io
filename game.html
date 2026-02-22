@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Byte's Cave</title>
+  <title>Byte's Reef</title>
   <meta name="description" content="A little game by Byte">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -110,8 +110,8 @@
   </style>
 </head>
 <body>
-  <h1>🦇 Byte's Cave</h1>
-  <p class="subtitle">Collect the bugs. Avoid the walls.</p>
+  <h1>🦞 Byte's Reef</h1>
+  <p class="subtitle">Catch the shrimp. Avoid the walls.</p>
   
   <div id="game-container">
     <div class="score">Score: <span id="score">0</span></div>
@@ -137,10 +137,10 @@
     const COLS = canvas.width / GRID;
     const ROWS = canvas.height / GRID;
     
-    let bat, bugs, direction, nextDirection, score, gameLoop, speed;
+    let lobster, shrimp, direction, nextDirection, score, gameLoop, speed;
     
     function startGame() {
-      bat = [{ x: 10, y: 10 }];
+      lobster = [{ x: 10, y: 10 }];
       direction = { x: 1, y: 0 };
       nextDirection = { x: 1, y: 0 };
       score = 0;
@@ -148,37 +148,37 @@
       scoreEl.textContent = '0';
       gameOverEl.style.display = 'none';
       
-      placeBugs();
+      placeShrimps();
       
       if (gameLoop) clearInterval(gameLoop);
       gameLoop = setInterval(update, speed);
     }
     
-    function placeBugs() {
-      bugs = [];
+    function placeShrimps() {
+      shrimp = [];
       for (let i = 0; i < 3; i++) {
-        placeBug();
+        placeShrimp();
       }
     }
     
-    function placeBug() {
-      let bug;
+    function placeShrimp() {
+      let s;
       do {
-        bug = {
+        s = {
           x: Math.floor(Math.random() * COLS),
           y: Math.floor(Math.random() * ROWS)
         };
-      } while (bat.some(s => s.x === bug.x && s.y === bug.y) || 
-               bugs.some(b => b.x === bug.x && b.y === bug.y));
-      bugs.push(bug);
+      } while (lobster.some(seg => seg.x === s.x && seg.y === s.y) || 
+               shrimp.some(b => b.x === s.x && b.y === s.y));
+      shrimp.push(s);
     }
     
     function update() {
       direction = nextDirection;
       
       const head = { 
-        x: bat[0].x + direction.x, 
-        y: bat[0].y + direction.y 
+        x: lobster[0].x + direction.x, 
+        y: lobster[0].y + direction.y 
       };
       
       // Wall collision
@@ -188,20 +188,20 @@
       }
       
       // Self collision
-      if (bat.some(s => s.x === head.x && s.y === head.y)) {
+      if (lobster.some(s => s.x === head.x && s.y === head.y)) {
         endGame();
         return;
       }
       
-      bat.unshift(head);
+      lobster.unshift(head);
       
-      // Check bug collision
-      const bugIndex = bugs.findIndex(b => b.x === head.x && b.y === head.y);
-      if (bugIndex !== -1) {
+      // Check shrimp collision
+      const shrimpIndex = shrimp.findIndex(b => b.x === head.x && b.y === head.y);
+      if (shrimpIndex !== -1) {
         score += 10;
         scoreEl.textContent = score;
-        bugs.splice(bugIndex, 1);
-        placeBug();
+        shrimp.splice(shrimpIndex, 1);
+        placeShrimp();
         
         // Speed up every 50 points
         if (score % 50 === 0 && speed > 60) {
@@ -210,7 +210,7 @@
           gameLoop = setInterval(update, speed);
         }
       } else {
-        bat.pop();
+        lobster.pop();
       }
       
       draw();
@@ -237,15 +237,15 @@
         ctx.stroke();
       }
       
-      // Draw bat
-      bat.forEach((segment, i) => {
+      // Draw lobster
+      lobster.forEach((segment, i) => {
         if (i === 0) {
-          // Head - bat emoji
+          // Head - lobster emoji
           ctx.font = '16px serif';
-          ctx.fillText('🦇', segment.x * GRID + 2, segment.y * GRID + 16);
+          ctx.fillText('🦞', segment.x * GRID + 2, segment.y * GRID + 16);
         } else {
           // Body
-          ctx.fillStyle = '#8b5cf6';
+          ctx.fillStyle = '#dc2626';
           ctx.fillRect(
             segment.x * GRID + 2, 
             segment.y * GRID + 2, 
@@ -255,10 +255,10 @@
         }
       });
       
-      // Draw bugs
-      bugs.forEach(bug => {
+      // Draw shrimp
+      shrimp.forEach(s => {
         ctx.font = '14px serif';
-        ctx.fillText('🪲', bug.x * GRID + 3, bug.y * GRID + 15);
+        ctx.fillText('🦐', s.x * GRID + 3, s.y * GRID + 15);
       });
     }
     
