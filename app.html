@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Byte — Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--tg-theme-bg-color, #1a1a2e);
+      color: var(--tg-theme-text-color, #e0e0e0);
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .header .emoji { font-size: 48px; margin-bottom: 12px; }
+    .header h1 { font-size: 24px; font-weight: 600; }
+    .header p {
+      font-size: 14px;
+      color: var(--tg-theme-hint-color, #888);
+      margin-top: 6px;
+    }
+    .card {
+      background: var(--tg-theme-secondary-bg-color, #16213e);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card h3 {
+      font-size: 14px;
+      color: var(--tg-theme-hint-color, #888);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .card .value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .card .sub {
+      font-size: 13px;
+      color: var(--tg-theme-hint-color, #888);
+      margin-top: 4px;
+    }
+    .info {
+      background: var(--tg-theme-secondary-bg-color, #16213e);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 24px;
+    }
+    .info h3 { font-size: 16px; margin-bottom: 8px; }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--tg-theme-hint-color, #333);
+      font-size: 14px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .label { color: var(--tg-theme-hint-color, #888); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="emoji">🦞</div>
+    <h1>Byte Mini App</h1>
+    <p>Proof of concept — Telegram WebApp</p>
+  </div>
+
+  <div class="card">
+    <h3>Status</h3>
+    <div class="value">✅ It works!</div>
+    <div class="sub">Mini App loaded successfully inside Telegram</div>
+  </div>
+
+  <div class="info">
+    <h3>WebApp Data</h3>
+    <div id="info-content">Loading...</div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    // Show what data we get from Telegram
+    const info = document.getElementById('info-content');
+    const user = tg.initDataUnsafe?.user;
+    const rows = [
+      ['Platform', tg.platform || 'unknown'],
+      ['Color Scheme', tg.colorScheme || 'unknown'],
+      ['Version', tg.version || 'unknown'],
+      ['User', user ? `${user.first_name} (${user.id})` : 'N/A'],
+      ['Is Expanded', tg.isExpanded ? 'Yes' : 'No'],
+      ['Viewport Height', `${tg.viewportHeight}px`],
+    ];
+
+    info.innerHTML = rows.map(([label, value]) =>
+      `<div class="info-row"><span class="label">${label}</span><span>${value}</span></div>`
+    ).join('');
+
+    // Set up main button as a demo
+    tg.MainButton.setText('Close');
+    tg.MainButton.show();
+    tg.MainButton.onClick(() => tg.close());
+  </script>
+</body>
+</html>
